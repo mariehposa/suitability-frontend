@@ -28,11 +28,11 @@ const Board = () => {
 	return (
 		<div className="board-wrapper">
             <p>{message}</p>
-			<div>
+			<ol>
 				{cards.map((e) => (
-					<p>{e}</p>
+					<li>{e}</li>
 				))}
-			</div>
+			</ol>
 			<button onClick={start} className="start-btn">
 				Start
 			</button>
