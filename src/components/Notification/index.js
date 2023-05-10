@@ -34,6 +34,7 @@ const Notification = () => {
 				<button>Send</button>
 			</form>
 
+            <p>{`Number of players connected: ${players.length}`}</p>
 			<ul>
 				{Object.entries(players).map((p) => (
 					<li>{p[1]}</li>

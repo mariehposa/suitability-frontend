@@ -1,9 +1,22 @@
 import "./Board.scss";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { socket } from "../../socket";
 
 const Board = () => {
 	const [cards, setCards] = useState([]);
+    const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_KEY}/message`)
+      .then((res) => {
+        setMessage(res.data.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 	const start = () => {
 		socket.emit("start");
 	};
@@ -14,6 +27,7 @@ const Board = () => {
 	});
 	return (
 		<div className="board-wrapper">
+            <p>{message}</p>
 			<div>
 				{cards.map((e) => (
 					<p>{e}</p>
