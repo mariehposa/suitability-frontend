@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { socket } from "../../socket";
+import { useSelector } from "react-redux";
 import "./Notification.scss";
 
 const Notification = () => {
 	const [players, setPlayers] = useState({});
     const [userInput, setUserInput] = useState("")
+
+	const user = useSelector((state) => state.user);
+	const board = useSelector((state) => state.board);
 
 	socket.on("connected players", function (connectedPlayers) {
 		var playersObj = JSON.parse(connectedPlayers);
@@ -36,9 +40,10 @@ const Notification = () => {
 
             <p>{`Number of players connected: ${Object.keys(players).length}`}</p>
 			<ul>
-				{Object.entries(players).map((p) => (
-					<li>{p[1]}</li>
-				))}
+				{Object.entries(players).map((p) => {
+					console.log('checking', p, board)
+					return <li style={{color: p[0] === board.activePlayer ? 'red': 'black'}} >{p[1]}</li>
+})}
 			</ul>
 		</div>
 	);
