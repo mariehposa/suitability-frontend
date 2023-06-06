@@ -21,14 +21,14 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-// .card.active {
-//   transform: translateX(0);
-// }
+.board > .card.active {
+  transform: translateX(0);
+}
 
-// .card:not(.active) {
-//   position: absolute;
-//   transform: translateX(-100%);
-// }
+.board > .card:not(.active) {
+  position: absolute;
+  transform: translateX(-100%);
+}
 
 .joker-card {
   border: 1px solid rgb(214, 43, 43);
