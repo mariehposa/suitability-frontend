@@ -13,3 +13,9 @@ export const socketConstants = {
 	connect: "connect",
 	disconnect: "disconnect",
 }
+
+export const gameState = {
+	ready: "ready",
+	chooseMode: "choose_mode",
+	selectSuitabilities: "select_suitabilities"
+}
