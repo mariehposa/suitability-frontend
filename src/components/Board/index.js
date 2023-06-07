@@ -115,7 +115,8 @@ const Board = (props) => {
 
     socket.on(socketConstants.suitabilityChosen, (ability) => {
       closeModal()
-      toast.info(`${ability} selected successfully`, {
+      setSelectedSuit("")
+      toast.info(`${ability} suit selected successfully`, {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
