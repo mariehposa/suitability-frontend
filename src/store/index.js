@@ -19,8 +19,8 @@ const allReducers = combineReducers({
   notification: NotificationReducer,
 });
 
-const pReducer = persistReducer(persistConfig, allReducers);
+// const pReducer = persistReducer(persistConfig, allReducers);
 
-export const store = createStore(pReducer, {}, compose(applyMiddleware(thunk)));
+export const store = createStore(allReducers, compose(applyMiddleware(thunk)));
 
-export const persistor = persistStore(store);
+// export const persistor = persistStore(store);
