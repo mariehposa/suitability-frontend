@@ -38,6 +38,8 @@ const Board = (props) => {
 	const [cards, setCards] = useState([]);
 	const [gameStatus, setGameStatus] = useState(gameState.ready);
 	const [selectedSuit, setSelectedSuit] = useState("");
+	const [abilityToAssign, setAbilityToAssign] = useState("")
+  const [assignedAbilities, setAssignedAbilities] = useState({})
 
 	const dispatch = useDispatch();
 
@@ -64,9 +66,13 @@ const Board = (props) => {
 		});
 
 	const selectSuit = (suit) => {
-		setSelectedSuit(suit);
-		console.log("suit", suit);
-		suitNotify();
+    console.log("suit", suit);
+    if(!Object.values(assignedAbilities).includes(suit)){
+      setSelectedSuit(suit);
+
+      socket.emit(socketConstants.suitabilityChosen, abilityToAssign, suit)
+    }
+		// suitNotify();
 	};
 
 	const user = useSelector((state) => state.user);
@@ -99,6 +105,27 @@ const Board = (props) => {
 		socket.on(socketConstants.error, (e) => {
 			// console.log("An error occured", e.msg);
 		});
+
+    socket.on(socketConstants.chooseSuitability, (ability, assignedAbilities) => {
+      setAbilityToAssign(ability)
+      // debugger
+      setAssignedAbilities(assignedAbilities ?? {})
+      openModal()
+    })
+
+    socket.on(socketConstants.suitabilityChosen, (ability) => {
+      closeModal()
+      toast.info(`${ability} selected successfully`, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+      }); 
+    })
 
 		return () => {
 			socket.off("player cards", function (cards) {
@@ -139,7 +166,9 @@ const Board = (props) => {
 
 	const start = () => {
 		socket.emit("start");
-		setGameStatus(gameState.selectSuitabilities);
+    console.log("emitting start")
+		// setGameStatus(gameState.selectSuitabilities);
+    setGameStatus(gameState.inPlay);
 		dispatch(startGame());
 	};
 
@@ -202,7 +231,7 @@ const Board = (props) => {
 				))}
 			</div>
 
-			{gameStatus === "ready" && (
+			{gameStatus === gameState.ready && (
 				<button
 					onClick={() => {
 						setGameStatus(gameState.chooseMode);
@@ -213,7 +242,7 @@ const Board = (props) => {
 				</button>
 			)}
 
-			{gameStatus === "choose_mode" && (
+			{gameStatus === gameState.chooseMode && (
 				<div className="mode-wrapper">
 					<p>Choose game mode</p>
 					<button onClick={start} className="mode-btn">
@@ -221,7 +250,7 @@ const Board = (props) => {
 					</button>
 					<button
 						onClick={() => {
-							setGameStatus(start);
+							start()
 						}}
 						className="mode-btn"
 					>
@@ -231,7 +260,9 @@ const Board = (props) => {
 			)}
 
 			{gameStatus === "select_suitabilities" && (
-				<button onClick={openModal} className="start-btn">
+				<button onClick={() => {
+          socket.emit(socketConstants.chooseSuitability)
+        }} className="start-btn">
 					Select suitabilities
 				</button>
 			)}
@@ -241,7 +272,7 @@ const Board = (props) => {
 				onRequestClose={closeModal}
 				style={customStyles}
 			>
-				<p className="modal-header">{`Select trump suit`}</p>
+				<p className="modal-header">{`Select ${abilityToAssign} suit`}</p>
 
 				<div className="modal-content">
 					{suitCards.map((card) => (
@@ -256,6 +287,7 @@ const Board = (props) => {
 							<div className="img-container">
 								{selectedSuit === card.charAt(0) && (
 									<img
+                  
 										src={check}
 										alt="selected-suit"
 										className="selected-suit-check"
@@ -263,6 +295,7 @@ const Board = (props) => {
 								)}
 								<img
 									key={card}
+                  style={{cursor: `${Object.values(assignedAbilities).includes(card.charAt(0))? 'not-allowed': 'pointer'}`}} 
 									className={`card ${
 										selectedSuit === card.charAt(0) ? "img-overlay" : ""
 									}`}
