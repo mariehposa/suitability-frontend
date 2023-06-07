@@ -1,168 +1,314 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
-  addItem,
-  deleteItem,
-  changePlayer,
-  startGame,
-  updateBoard,
+	addItem,
+	deleteItem,
+	changePlayer,
+	startGame,
+	updateBoard,
+	updatePlayerTricks,
+	updatePlayerScores,
 } from "../../redux/actionCreators/board";
 import { socket } from "../../socket";
-import { socketConstants } from "../../utils";
+import { gameState, socketConstants } from "../../utils";
 import "./Board.scss";
-// import second from '../../assets/c'
+import Modal from "react-modal";
+import check from "../../assets/cards/check.svg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const customStyles = {
+	content: {
+		top: "50%",
+		left: "33%",
+		right: "auto",
+		bottom: "auto",
+		marginRight: "-50%",
+		transform: "translate(-50%, -50%)",
+		padding: "30px",
+		width: "400px",
+	},
+};
 
 const Board = (props) => {
-  const { numOfItems, addItem, deleteItem, board } = props;
+	const { board, updateTricks, tricks, activePlayer } = props;
 
-  const [cards, setCards] = useState([]);
-  const [message, setMessage] = useState("");
+	console.log("props", props);
 
-  const dispatch = useDispatch();
+	const [cards, setCards] = useState([]);
+	const [gameStatus, setGameStatus] = useState(gameState.ready);
+	const [selectedSuit, setSelectedSuit] = useState("");
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${process.env.REACT_APP_API_KEY}/message`)
-  //     .then((res) => {
-  //       setMessage(res.data.message);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
+	const dispatch = useDispatch();
+
+	const [modalIsOpen, setIsOpen] = React.useState(false);
+
+	const openModal = () => {
+		setIsOpen(true);
+	};
+
+	const closeModal = () => {
+		setIsOpen(false);
+	};
+
+	const suitNotify = () =>
+		toast("Suit assigned successfully!", {
+			position: "top-right",
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: "light",
+		});
+
+	const selectSuit = (suit) => {
+		setSelectedSuit(suit);
+		console.log("suit", suit);
+		suitNotify();
+	};
+
+	const user = useSelector((state) => state.user);
+
+	useEffect(() => {
+		socket.on("player cards", function (cards) {
+			// console.log(cards, "player cards");
+			setCards(JSON.parse(cards)[socket.id]);
+		});
+
+		socket.on(socketConstants.board, (board) => {
+			// console.log("current board", board);
+			dispatch(updateBoard(board));
+		});
+
+		socket.on(socketConstants.activePlayer, (playerId) => {
+			console.log("active player", playerId);
+			dispatch(changePlayer(playerId));
+		});
+
+		socket.on(socketConstants.playerScores, (scores) => {
+			// console.log("board logs", socketConstants.playerScores, scores);
+		});
+
+		socket.on(socketConstants.playerTricks, (tricks) => {
+			// console.log(socketConstants.playerTricks, tricks);
+			updateTricks(tricks);
+		});
+
+		socket.on(socketConstants.error, (e) => {
+			// console.log("An error occured", e.msg);
+		});
+
+		return () => {
+			socket.off("player cards", function (cards) {
+				// console.log(cards, "player cards");
+				setCards(JSON.parse(cards)[socket.id]);
+			});
+
+			socket.off(socketConstants.board, (board) => {
+				// console.log("current board", board);
+				dispatch(updateBoard(board));
+			});
+
+			socket.off(socketConstants.activePlayer, (playerId) => {
+				// console.log("active player", playerId);
+				// dispatch(changePlayer(playerId));
+			});
+
+			socket.off(socketConstants.error, (e) => {
+				// console.log("An error occured", e.msg);
+			});
+		};
+	}, [dispatch]);
 
   useEffect(() => {
-    socket.on("player cards", function (cards) {
-      console.log(cards, "player cards");
-      setCards(JSON.parse(cards)[socket.id]);
-    });
+    if (activePlayer === user.userId) {
+      toast.info("Your turn", {
+        position: "top-center",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+      }); 
+    } else { toast.dismiss() }
+  }, [activePlayer, user.userId])
 
-    socket.on(socketConstants.board, (board) => {
-      console.log("current board", board);
-      dispatch(updateBoard(board));
-    });
+	const start = () => {
+		socket.emit("start");
+		setGameStatus(gameState.selectSuitabilities);
+		dispatch(startGame());
+	};
 
-    socket.on(socketConstants.activePlayer, (playerId) => {
-      console.log("active player", playerId);
-      dispatch(changePlayer(playerId));
-    });
+	function importAll(r) {
+		let images = {};
+		r.keys().map((item, index) => {
+			images[item.replace("./", "")] = r(item);
+		});
+		return images;
+	}
 
-    socket.on(socketConstants.playerScores, (scores) => {
-      console.log(socketConstants.playerScores, scores);
-      
-    });
-    socket.on(socketConstants.playerTricks, (tricks) => {
-      console.log(socketConstants.playerTricks, tricks);
-      
-    });
+	const images = importAll(
+		require.context("../../assets/cards/", true, /\.(png|jpe?g|svg)$/)
+	);
 
-    socket.on(socketConstants.error, (e) => {
-      console.log("An error occured", e.msg);
-    });
+	const suitCards = ["C13", "H13", "D13", "S13"];
 
-    return () => {
-      socket.on("player cards", function (cards) {
-        console.log(cards, "player cards");
-        setCards(JSON.parse(cards)[socket.id]);
-      });
+	const lastCard = board?.slice(-1)[0];
 
-      socket.on(socketConstants.board, (board) => {
-        console.log("current board", board);
-        dispatch(updateBoard(board));
-      });
+	console.log("last card", props.board);
 
-      socket.on(socketConstants.activePlayer, (playerId) => {
-        console.log("active player", playerId);
-        dispatch(changePlayer(playerId));
-      });
+	const playCard = (card) => {
+		socket.emit(socketConstants.playCard, card);
+	};
 
-      socket.on(socketConstants.error, (e) => {
-        console.log("An error occured", e.msg);
-      });
-    };
-  }, [dispatch]);
+	return (
+		<div className="board-wrapper">
+			<p className="game-name">Suitability</p>
 
-  const start = () => {
-    socket.emit("start");
-    dispatch(startGame());
-  };
+			<div className="board">
+				{board.length > 0 ? (board).map((card, index) => (
+					<img
+						className={`card ${
+							board.length === 0 || index === board.length - 1 ? "active" : ""
+						}`}
+						src={images[`${card}.svg`]}
+						alt={`Card ${index + 1}`}
+						style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
+					/>
+				)): <div className="arena">Play card</div>}
+				{/* {board.length > 0 ? board : <div className="arena">Play card</div>} */}
+			</div>
 
-  function importAll(r) {
-    let images = {};
-    r.keys().map((item, index) => {
-      images[item.replace("./", "")] = r(item);
-    });
-    return images;
-  }
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					margin: "50px 0",
+					justifyContent: "center",
+				}}
+			>
+				{cards.sort().map((e) => (
+					<img
+						className={`card ${e === "J0" ? "joker-card" : ""}`}
+						onClick={() => playCard(e)}
+						key={e}
+						src={images[`${e}.svg`]}
+						alt={`card ${e}`}
+					/>
+				))}
+			</div>
 
-  const images = importAll(
-    require.context("../../assets/cards/", true, /\.(png|jpe?g|svg)$/)
-  );
+			{gameStatus === "ready" && (
+				<button
+					onClick={() => {
+						setGameStatus(gameState.chooseMode);
+					}}
+					className="start-btn"
+				>
+					Start
+				</button>
+			)}
 
-  const lastCard = board?.slice(-1)[0];
+			{gameStatus === "choose_mode" && (
+				<div className="mode-wrapper">
+					<p>Choose game mode</p>
+					<button onClick={start} className="mode-btn">
+						Four deals
+					</button>
+					<button
+						onClick={() => {
+							setGameStatus(start);
+						}}
+						className="mode-btn"
+					>
+						250 points
+					</button>
+				</div>
+			)}
 
-  console.log("last card", props.board);
+			{gameStatus === "select_suitabilities" && (
+				<button onClick={openModal} className="start-btn">
+					Select suitabilities
+				</button>
+			)}
 
-  const playCard = (card) => {
-    socket.emit(socketConstants.playCard, card);
-  };
+			<Modal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				style={customStyles}
+			>
+				<p className="modal-header">{`Select trump suit`}</p>
 
-  //src/assets/cards/C10.svg
-  return (
-    <div className="board-wrapper">
-      {/* <p>{message}</p> */}
-      <div className="board">
-        {/* {lastCard ? <img style={{width: "40px", margin: "0 5px"}} src={images[`${lastCard}.svg`]} alt={`card ${lastCard}`}/> : <img style={{width: "40px", margin: "0 5px"}} src={images[`RED_BACK.svg`]} alt={`card RED_BACK`}/>} */}
-        {(board.length > 0 ? board : ['RED_BACK']).map((card, index) => (
-
-          <img
-            className={`card ${(board.length === 0 || index === board.length - 1) ? "active" : ""}`}
-            src={images[`${card}.svg`]}
-            alt={`Card ${index + 1}`}
-            style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
-          />
-          // </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", flexWrap: 'wrap', margin: "25px 0", justifyContent: 'center' }}>
-        {cards.sort().map((e) => (
-          <img
-            className={`card ${e === 'J0' ? 'joker-card' : ''}`}
-            onClick={() => playCard(e)}
-            // style={{ width: "60px", margin: "0 5px" }}
-            key={e}
-            src={images[`${e}.svg`]}
-            alt={`card ${e}`}
-          />
-        ))}
-      </div>
-      {!board.gameStart && (
-        <button onClick={start} className="start-btn">
-          Start
-        </button>
-      )}
-
-      {/* <div className="cart">
-        <h2>Number of items in Cart: {numOfItems}</h2>
-        <button onClick={addItem}>Add Item to Cart</button>
-        <button disabled={numOfItems > 0 ? false : true} onClick={deleteItem}>
-          Remove Item to Cart
-        </button>
-      </div> */}
-    </div>
-  );
+				<div className="modal-content">
+					{suitCards.map((card) => (
+						<>
+							{/* {selectedSuit === card.charAt(0) && ( */}
+							{/* <img
+									src={check}
+									alt="selected-suit"
+									className="selected-suit-check"
+								/> */}
+							{/* // )} */}
+							<div className="img-container">
+								{selectedSuit === card.charAt(0) && (
+									<img
+										src={check}
+										alt="selected-suit"
+										className="selected-suit-check"
+									/>
+								)}
+								<img
+									key={card}
+									className={`card ${
+										selectedSuit === card.charAt(0) ? "img-overlay" : ""
+									}`}
+									src={images[`${card}.svg`]}
+									alt={`card ${card}`}
+									onClick={() => selectSuit(card.charAt(0))}
+								/>
+								{/* {selectedSuit && <div className="img-overlay" />} */}
+							</div>
+						</>
+					))}
+				</div>
+				<button onClick={closeModal} className="modal-close-btn">
+					Close
+				</button>
+			</Modal>
+			<ToastContainer />
+			<div className="board">
+				{[...Array(tricks ?? 0).keys()].map((t, index) => (
+					<img
+						className={`card ${
+							tricks.length === 0 || index === tricks.length - 1 ? "active" : ""
+						}`}
+						src={images[`RED_BACK.svg`]}
+						alt={`Card ${index + 1}`}
+						style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
+					/>
+				))}
+			</div>
+		</div>
+	);
 };
 
 const mapStateToProps = (state) => ({
-  numOfItems: state.board.numOfItems,
-  loading: state.board.loading,
-  error: state.board.error,
-  board: state.board.board,
-  activePlayer: state.board.activePlayer,
+	numOfItems: state.board.numOfItems,
+	loading: state.board.loading,
+	error: state.board.error,
+	board: state.board.board,
+	activePlayer: state.board.activePlayer,
+	tricks: state.board.playerTricks,
+	scores: state.board.playerScores,
 });
 
 export default connect(mapStateToProps, {
-  addItem: () => addItem(),
-  deleteItem: () => deleteItem(),
+	addItem: () => addItem(),
+	deleteItem: () => deleteItem(),
+	updateTricks: (x) => updatePlayerTricks(x),
+	updateScores: (x) => updatePlayerScores(x),
 })(Board);

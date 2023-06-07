@@ -9,9 +9,10 @@
 .form {
 	display: flex;
 	flex-direction: column;
+	margin-bottom: 20px;
 
 	label {
-		font-size: 12px;
+		font-size: 15px;
 		margin-top: 10px;
 	}
 
@@ -28,6 +29,28 @@
 		font-weight: 500;
 		margin-top: 10px;
         border-radius: 5px;
-        border: #00a300;
+        border: #00a000;
+		cursor: pointer;
 	}
+}
+
+.score-board {
+	display: flex;
+	flex-direction: column;
+	margin: 20px 0;
+
+	table {
+		border-collapse: collapse;
+		width: 100%;
+	  }
+	  
+	  td, th {
+		border: 1px solid #dddddd;
+		text-align: left;
+		padding: 8px;
+	  }
+	  
+	  tr:nth-child(even) {
+		background-color: #dddddd;
+	  }
 }
