@@ -76,6 +76,7 @@ const Board = (props) => {
 	};
 
 	const user = useSelector((state) => state.user);
+  const playerTricks = tricks[user.userId]
 
 	useEffect(() => {
 		socket.on("player cards", function (cards) {
@@ -315,10 +316,10 @@ const Board = (props) => {
 			</Modal>
 			<ToastContainer />
 			<div className="board">
-				{[...Array(tricks ?? 0).keys()].map((t, index) => (
+				{[...Array(playerTricks ?? 0).keys()].map((t, index) => (
 					<img
 						className={`card ${
-							tricks.length === 0 || index === tricks.length - 1 ? "active" : ""
+							playerTricks.length === 0 || index === playerTricks.length - 1 ? "active" : ""
 						}`}
 						src={images[`RED_BACK.svg`]}
 						alt={`Card ${index + 1}`}
