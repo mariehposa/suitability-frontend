@@ -7,7 +7,8 @@ export const socketConstants = {
 	error: "error",
 	playerScores: "playerScores",
 	playerTricks: "playerTricks",
-
+	chooseSuitability: "chooseSuitability",
+	suitabilityChosen: "suitabilityChosen",
 
 	
 	connect: "connect",
@@ -17,5 +18,6 @@ export const socketConstants = {
 export const gameState = {
 	ready: "ready",
 	chooseMode: "choose_mode",
+	inPlay: "in_play",
 	selectSuitabilities: "select_suitabilities"
 }
