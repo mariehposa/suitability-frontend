@@ -11,15 +11,18 @@ const Notification = (props) => {
 
 	const [players, setPlayers] = useState({});
 	const [userInput, setUserInput] = useState("");
+	const [dealer, setDealer] = useState("")
 	
 	const user = useSelector((state) => state.user);
 	const board = useSelector((state) => state.board);
 	console.log("notif props", props, user)
 
-	socket.on("connected players", function (connectedPlayers) {
+	socket.on(socketConstants.connectedPlayers, function (connectedPlayers, host) {
 		var playersObj = JSON.parse(connectedPlayers);
 		console.log(playersObj);
 		setPlayers(playersObj);
+
+		setDealer(host)
 	});
 
 	socket.on("usernameSet", function (players) {
@@ -77,7 +80,7 @@ const Notification = (props) => {
 										color: p[0] === board.activePlayer ? "red" : "black",
 									}}
 								>
-									{p[1]}
+									{`${p[0] === dealer ? "HOST" : ""} ${p[1]}`}
 								</td>
 								<td>{tricks[p[0]] ?? 0}</td>
 								<td>{scores[p[0]] ?? 0}</td>
