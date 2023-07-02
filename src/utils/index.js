@@ -11,6 +11,8 @@ export const socketConstants = {
 	suitabilityChosen: "suitabilityChosen",
 	createRoom: 'createRoom',
 	joinRoom: 'joinRoom',
+	roomCreated: 'roomCreated',
+	suitabilities: "suitabilities",
 	connectedPlayers: 'connectedPlayers',
 
 	
@@ -37,5 +39,10 @@ export const abilities = {
 	Trump: "Trump",
 	Reverse: "Reverse",
 	Penalty: "Penalty",
-	// Privilege: "Privilege"
+	Privilege: "Privilege"
+}
+
+export const gameTypes = {
+	Deals: "deals",
+	Points: "points",
 }
