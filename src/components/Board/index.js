@@ -10,7 +10,7 @@ import {
   updatePlayerScores,
 } from "../../redux/actionCreators/board";
 import { socket } from "../../socket";
-import { gameState, privileges, socketConstants } from "../../utils";
+import { abilities, gameState, gameTypes, privileges, socketConstants } from "../../utils";
 import "./Board.scss";
 import Modal from "react-modal";
 import check from "../../assets/cards/check.svg";
@@ -121,6 +121,19 @@ const Board = (props) => {
       });
     });
 
+    socket.on(socketConstants.roomCreated, (roomId) => {
+      toast.info(`Created room ${roomId}`, {
+        position: "top-center",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+      });
+    });
+
     socket.on(
       socketConstants.chooseSuitability,
       (ability, assignedAbilities) => {
@@ -131,6 +144,18 @@ const Board = (props) => {
         else openModal();
       }
     );
+
+    socket.on(socketConstants.suitabilities, (abilities) => {
+      console.log(abilities, "assigned abilities");
+      setAssignedAbilities(abilities);
+    });
+    /**
+     * state.board = [];
+    state.currentSuit = "";
+    state.highestPlayedCard = 0;
+    setCurrentPlayer(state.highestPlayer);
+    state.highestPlayer = null;
+     */
 
     socket.on(socketConstants.suitabilityChosen, (ability) => {
       closeModal();
@@ -187,8 +212,8 @@ const Board = (props) => {
     }
   }, [activePlayer, user.userId]);
 
-  const start = () => {
-    socket.emit("start");
+  const start = (gameType) => {
+    socket.emit("start", gameType);
     console.log("emitting start");
     // setGameStatus(gameState.selectSuitabilities);
     setGameStatus(gameState.inPlay);
@@ -297,12 +322,17 @@ const Board = (props) => {
       {gameStatus === gameState.chooseMode && (
         <div className="mode-wrapper">
           <p>Choose game mode</p>
-          <button onClick={start} className="mode-btn">
+          <button
+            onClick={() => {
+              start(gameTypes.Deals);
+            }}
+            className="mode-btn"
+          >
             Four deals
           </button>
           <button
             onClick={() => {
-              start();
+              start(gameTypes.Points);
             }}
             className="mode-btn"
           >
@@ -322,59 +352,29 @@ const Board = (props) => {
         </button>
       )}
 
+      <SuitabilityModal
+        modalIsOpen={modalIsOpen}
+        closeModal={closeModal}
+        abilityToAssign={abilityToAssign}
+        suitCards={suitCards}
+        selectedSuit={selectedSuit}
+        assignedAbilities={assignedAbilities}
+        selectSuit={selectSuit}
+        images={images}
+      />
       <PrivilegeModal
         modalIsOpen={privilegeModalOpen}
         closeModal={() => {
           setPrivilegeModalOpen(false);
         }}
-		selectSuit={(suit) => { socket.emit(socketConstants.suitabilityChosen, abilityToAssign, suit); }}
-		cardImages={images}
+        selectSuit={(suit) => {
+          socket.emit(socketConstants.suitabilityChosen, abilityToAssign, suit);
+        }}
+        cardImages={images}
       />
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-      >
-        <p className="modal-header">{`Select ${abilityToAssign} suit`}</p>
+      <SuitabilitiesSelected cardImages={images} assignedAbilities={assignedAbilities} />
 
-        <div className="modal-content">
-          {suitCards.map((card) => (
-            <>
-
-              <div className="img-container">
-                {selectedSuit === card.charAt(0) && (
-                  <img
-                    src={check}
-                    alt="selected-suit"
-                    className="selected-suit-check"
-                  />
-                )}
-                <img
-                  key={card}
-                  style={{
-                    cursor: `${
-                      Object.values(assignedAbilities).includes(card.charAt(0))
-                        ? "not-allowed"
-                        : "pointer"
-                    }`,
-                  }}
-                  className={`card ${
-                    selectedSuit === card.charAt(0) ? "img-overlay" : ""
-                  }`}
-                  src={images[`${card}.svg`]}
-                  alt={`card ${card}`}
-                  onClick={() => selectSuit(card.charAt(0))}
-                />
-                {/* {selectedSuit && <div className="img-overlay" />} */}
-              </div>
-            </>
-          ))}
-        </div>
-        <button onClick={closeModal} className="modal-close-btn">
-          Close
-        </button>
-      </Modal>
       <ToastContainer />
       <div className="board">
         {[...Array(playerTricks ?? 0).keys()].map((t, index) => (
@@ -394,13 +394,75 @@ const Board = (props) => {
   );
 };
 
-const PrivilegeModal = ({modalIsOpen, closeModal, selectSuit, cardImages}) => {
+const SuitabilityModal = ({
+  modalIsOpen,
+  closeModal,
+  abilityToAssign,
+  suitCards,
+  selectedSuit,
+  assignedAbilities,
+  selectSuit,
+  images,
+}) => {
+  return (
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      style={customStyles}
+    >
+      <p className="modal-header">{`Select ${abilityToAssign} suit`}</p>
+
+      <div className="modal-content">
+        {suitCards.map((card) => (
+          <>
+            <div className="img-container">
+              {selectedSuit === card.charAt(0) && (
+                <img
+                  src={check}
+                  alt="selected-suit"
+                  className="selected-suit-check"
+                />
+              )}
+              <img
+                key={card}
+                style={{
+                  cursor: `${
+                    Object.values(assignedAbilities).includes(card.charAt(0))
+                      ? "not-allowed"
+                      : "pointer"
+                  }`,
+                }}
+                className={`card ${
+                  selectedSuit === card.charAt(0) ? "img-overlay" : ""
+                }`}
+                src={images[`${card}.svg`]}
+                alt={`card ${card}`}
+                onClick={() => selectSuit(card.charAt(0))}
+              />
+              {/* {selectedSuit && <div className="img-overlay" />} */}
+            </div>
+          </>
+        ))}
+      </div>
+      <button onClick={closeModal} className="modal-close-btn">
+        Close
+      </button>
+    </Modal>
+  );
+};
+
+const PrivilegeModal = ({
+  modalIsOpen,
+  closeModal,
+  selectSuit,
+  cardImages,
+}) => {
   const suitCards = ["BLUE_BACK", "BLUE_BACK", "BLUE_BACK", "RED_BACK"];
   const [selectedSuit, setSelectedSuit] = useState("");
 
   const privs = Object.keys(privileges);
 
-  console.log(cardImages, 'cardImages')
+  console.log(cardImages, "cardImages");
 
   return (
     <Modal
@@ -434,7 +496,7 @@ const PrivilegeModal = ({modalIsOpen, closeModal, selectSuit, cardImages}) => {
                 onClick={() => {
                   setSelectedSuit(privs[index]);
                   selectSuit(privileges[privs[index]]);
-				  console.log(privs[index], 'priv')
+                  console.log(privs[index], "priv");
                 }}
               />
               <p>{privileges[privs[index]]}</p>
@@ -447,6 +509,34 @@ const PrivilegeModal = ({modalIsOpen, closeModal, selectSuit, cardImages}) => {
         Close
       </button>
     </Modal>
+  );
+};
+
+const SuitabilitiesSelected = ({ cardImages, assignedAbilities }) => {
+  const entries = Object.entries(assignedAbilities)
+  return (
+    <div style={{display: 'flex', marginTop: '20px'}}>
+      {entries.length > 3 && entries.map((e) => {
+        const ability = e[0]
+        const card = `${e[1]}13`
+        return <div>
+          <img
+                key={card}
+                style={{
+                  cursor: `${
+                    Object.values(assignedAbilities).includes(card.charAt(0))
+                      ? "not-allowed"
+                      : "pointer"
+                  }`,
+                }}
+                className={`card`}
+                src={cardImages[`${ability !== abilities.Privilege ? card : 'BLUE_BACK'}.svg`]}
+                alt={`card ${card}`}
+              />
+              <p style={{textAlign: 'center'}}>{ability !== abilities.Privilege ? ability : e[1]}</p>
+        </div>
+})}
+    </div>
   );
 };
 
