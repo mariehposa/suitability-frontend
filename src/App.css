@@ -5,10 +5,10 @@
 }
 
 .game-name {
-  font-size: 50px;
+  font-size: 70px;
   font-weight: 900;
-  line-height: 20px;
-  font-family: 'Electrolize', sans-serif;
+  margin: 20px 0 30px 0;
+  font-family: 'Ewert', cursive;
 }
 
 .field {
