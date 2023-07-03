@@ -10,18 +10,13 @@ import {
 	updatePlayerScores,
 } from "../../redux/actionCreators/board";
 import { socket } from "../../socket";
-import {
-	abilities,
-	gameState,
-	gameTypes,
-	privileges,
-	socketConstants,
-} from "../../utils";
+import { gameState, gameTypes, socketConstants } from "../../utils";
 import "./Board.scss";
-import Modal from "react-modal";
-import check from "../../assets/cards/check.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SuitabilityModal from "./SuitabilityModal";
+import PrivilegeModal from "./PriviledgeModal";
+import SuitabilitiesSelected from "./SuitabilitiesSelected";
 
 const customStyles = {
 	content: {
@@ -295,7 +290,7 @@ const Board = (props) => {
 						key={e}
 						src={images[`${e}.svg`]}
 						alt={`card ${e}`}
-            style={{cursor: "pointer"}}
+						style={{ cursor: "pointer" }}
 					/>
 				))}
 			</div>
@@ -387,6 +382,7 @@ const Board = (props) => {
 				assignedAbilities={assignedAbilities}
 				selectSuit={selectSuit}
 				images={images}
+				customStyles={customStyles}
 			/>
 			<PrivilegeModal
 				modalIsOpen={privilegeModalOpen}
@@ -397,174 +393,31 @@ const Board = (props) => {
 					socket.emit(socketConstants.suitabilityChosen, abilityToAssign, suit);
 				}}
 				cardImages={images}
+				customStyles={customStyles}
 			/>
 
 			<ToastContainer />
 
-      <div className="trick-suit">
-        <div className="board">
-          {[...Array(playerTricks ?? 0).keys()].map((t, index) => (
-            <img
-              className={`card ${
-                playerTricks.length === 0 || index === playerTricks.length - 1
-                  ? "active"
-                  : ""
-              }`}
-              src={images[`RED_BACK.svg`]}
-              alt={`Card ${index + 1}`}
-              style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
-            />
-          ))}
-        </div>
-        <SuitabilitiesSelected
-          cardImages={images}
-          assignedAbilities={assignedAbilities}
-        />
-      </div>
-		</div>
-	);
-};
-
-const SuitabilityModal = ({
-	modalIsOpen,
-	abilityToAssign,
-	suitCards,
-	selectedSuit,
-	assignedAbilities,
-	selectSuit,
-	images,
-}) => {
-	return (
-		<Modal
-			isOpen={modalIsOpen}
-			style={customStyles}
-		>
-			<p className="modal-header">{`Select ${abilityToAssign} suit`}</p>
-
-			<div className="modal-content">
-				{suitCards.map((card) => (
-					<>
-						<div className="img-container">
-							{selectedSuit === card.charAt(0) && (
-								<img
-									src={check}
-									alt="selected-suit"
-									className="selected-suit-check"
-								/>
-							)}
-							<img
-								key={card}
-								style={{
-									cursor: `${
-										Object.values(assignedAbilities).includes(card.charAt(0))
-											? "not-allowed"
-											: "pointer"
-									}`,
-                  opacity: `${
-										Object.values(assignedAbilities).includes(card.charAt(0))
-											? "0.5"
-											: "1"
-									}`,
-								}}
-								className={`card ${
-									selectedSuit === card.charAt(0) ? "img-overlay" : ""
-								}`}
-								src={images[`${card}.svg`]}
-								alt={`card ${card}`}
-								onClick={() => selectSuit(card.charAt(0))}
-							/>
-						</div>
-					</>
-				))}
+			<div className="trick-suit">
+				<div className="board">
+					{[...Array(playerTricks ?? 0).keys()].map((t, index) => (
+						<img
+							className={`card ${
+								playerTricks.length === 0 || index === playerTricks.length - 1
+									? "active"
+									: ""
+							}`}
+							src={images[`RED_BACK.svg`]}
+							alt={`Card ${index + 1}`}
+							style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
+						/>
+					))}
+				</div>
+				<SuitabilitiesSelected
+					cardImages={images}
+					assignedAbilities={assignedAbilities}
+				/>
 			</div>
-		</Modal>
-	);
-};
-
-const PrivilegeModal = ({
-	modalIsOpen,
-	selectSuit,
-	cardImages,
-}) => {
-	const suitCards = ["BLUE_BACK", "BLUE_BACK", "BLUE_BACK", "RED_BACK"];
-	const [selectedSuit, setSelectedSuit] = useState("");
-
-	const privs = Object.keys(privileges);
-
-	console.log(cardImages, "cardImages");
-
-	return (
-		<Modal
-			isOpen={modalIsOpen}
-			style={customStyles}
-		>
-			<p className="modal-header">{`Select Privilege or Pass`}</p>
-
-			<div className="modal-content">
-				{suitCards.map((card, index) => (
-					<>
-						<div className="img-container">
-							{selectedSuit === card.charAt(0) && (
-								<img
-									src={check}
-									alt="selected-suit"
-									className="selected-suit-check"
-								/>
-							)}
-							<img
-								key={card}
-								style={{
-									cursor: `${"pointer"}`,
-								}}
-								className={`card ${
-									selectedSuit === privs[index] ? "img-overlay" : ""
-								}`}
-								src={cardImages[`${card}.svg`]}
-								alt={`card ${card}`}
-								onClick={() => {
-									setSelectedSuit(privs[index]);
-									selectSuit(privileges[privs[index]]);
-									console.log(privs[index], "priv");
-								}}
-							/>
-							<p>{privileges[privs[index]]}</p>
-						</div>
-					</>
-				))}
-			</div>
-		</Modal>
-	);
-};
-
-const SuitabilitiesSelected = ({ cardImages, assignedAbilities }) => {
-	const entries = Object.entries(assignedAbilities);
-	return (
-		<div style={{ display: "flex", textTransform: "capitalize"}}>
-			{entries.length > 3 &&
-				entries.map((e) => {
-					const ability = e[0];
-					const card = `${e[1]}13`;
-					return (
-						<div>
-							<img
-								key={card}
-								
-								className={`card`}
-								src={
-									cardImages[
-										`${
-											ability !== abilities.Privilege ? card : "BLUE_BACK"
-										}.svg`
-									]
-								}
-								alt={`card ${card}`}
-							/>
-							<p style={{ textAlign: "center" }}>
-								{ability !== abilities.Privilege ? ability : e[1]}
-							</p>
-						</div>
-					);
-				})}
 		</div>
 	);
 };

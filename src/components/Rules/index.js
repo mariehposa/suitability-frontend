@@ -2,13 +2,13 @@ import React from "react";
 import "./Rules.scss";
 
 const Rules = () => {
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    
+	function scrollToTop() {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	}
+
 	return (
 		<div className="rules-container">
-            <p className="heading">Game Rules</p>
+			<p className="heading">Game Rules</p>
 			<p>
 				Suitability is a trick-taking card game that can be played by 2 to 5
 				players. Depending on the number of players, a specific set of cards
@@ -145,7 +145,9 @@ const Rules = () => {
 				wins!
 			</p>
 
-            <button className="scroll-bar" onClick={scrollToTop}>Back to the game</button>
+			<button className="scroll-bar" onClick={scrollToTop}>
+				Back to the game
+			</button>
 		</div>
 	);
 };

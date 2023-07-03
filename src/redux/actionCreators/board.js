@@ -1,49 +1,49 @@
 import * as types from "../actionTypes/actionTypes";
 
 export const addItem = () => {
-  return {
-    type: types.ADD_ITEM,
-  };
+	return {
+		type: types.ADD_ITEM,
+	};
 };
 
 export const deleteItem = () => {
-  return {
-    type: types.DELETE_ITEM,
-  };
+	return {
+		type: types.DELETE_ITEM,
+	};
 };
 
 export const updateBoard = (board) => {
-  return {
-    type: types.NEW_CARD,
-    payload: board
-  };
+	return {
+		type: types.NEW_CARD,
+		payload: board,
+	};
 };
 
 export const updatePlayerTricks = (tricksObj) => (dispatch, getState) => {
-  console.log('from redux', tricksObj[getState().user.userId] ?? 0);
-  dispatch({
-    type: types.PLAYER_TRICKS,
-    payload: tricksObj //[getState().user.userId] ?? 0
-  });
+	console.log("from redux", tricksObj[getState().user.userId] ?? 0);
+	dispatch({
+		type: types.PLAYER_TRICKS,
+		payload: tricksObj, //[getState().user.userId] ?? 0
+	});
 };
 
 export const updatePlayerScores = (scoresObj) => (dispatch, getState) => {
-  // console.log('from redux', scoresObj[getState().user.userId] ?? 0);
-  dispatch({
-    type: types.PLAYER_SCORES,
-    payload: scoresObj
-  });
+	// console.log('from redux', scoresObj[getState().user.userId] ?? 0);
+	dispatch({
+		type: types.PLAYER_SCORES,
+		payload: scoresObj,
+	});
 };
 
 export const startGame = () => {
-  return {
-    type: types.GAME_START,
-  };
+	return {
+		type: types.GAME_START,
+	};
 };
 
 export const changePlayer = (playerId) => {
-  return {
-    type: types.PLAYER_CHANGE,
-    payload: playerId
-  };
+	return {
+		type: types.PLAYER_CHANGE,
+		payload: playerId,
+	};
 };

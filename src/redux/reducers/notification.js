@@ -5,17 +5,17 @@ const initialState = {
 };
 
 const NotificationReducer = (state = initialState, action) => {
-    const { type, payload } = action;
+	const { type, payload } = action;
 
-    switch (type) {
-      case types.PLAYER_SCORES:
-        return {
-          ...state,
-          playerScores: payload,
-        }
-        default:
-          return state;
-      }
+	switch (type) {
+		case types.PLAYER_SCORES:
+			return {
+				...state,
+				playerScores: payload,
+			};
+		default:
+			return state;
+	}
 };
 
 export default NotificationReducer;
