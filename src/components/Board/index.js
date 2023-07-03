@@ -277,7 +277,6 @@ const Board = (props) => {
 				) : (
 					<div className="arena">Play card</div>
 				)}
-				{/* {board.length > 0 ? board : <div className="arena">Play card</div>} */}
 			</div>
 
 			<div
@@ -296,6 +295,7 @@ const Board = (props) => {
 						key={e}
 						src={images[`${e}.svg`]}
 						alt={`card ${e}`}
+            style={{cursor: "pointer"}}
 					/>
 				))}
 			</div>
@@ -381,7 +381,6 @@ const Board = (props) => {
 
 			<SuitabilityModal
 				modalIsOpen={modalIsOpen}
-				closeModal={closeModal}
 				abilityToAssign={abilityToAssign}
 				suitCards={suitCards}
 				selectedSuit={selectedSuit}
@@ -400,33 +399,34 @@ const Board = (props) => {
 				cardImages={images}
 			/>
 
-			<SuitabilitiesSelected
-				cardImages={images}
-				assignedAbilities={assignedAbilities}
-			/>
-
 			<ToastContainer />
-			<div className="board">
-				{[...Array(playerTricks ?? 0).keys()].map((t, index) => (
-					<img
-						className={`card ${
-							playerTricks.length === 0 || index === playerTricks.length - 1
-								? "active"
-								: ""
-						}`}
-						src={images[`RED_BACK.svg`]}
-						alt={`Card ${index + 1}`}
-						style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
-					/>
-				))}
-			</div>
+
+      <div className="trick-suit">
+        <div className="board">
+          {[...Array(playerTricks ?? 0).keys()].map((t, index) => (
+            <img
+              className={`card ${
+                playerTricks.length === 0 || index === playerTricks.length - 1
+                  ? "active"
+                  : ""
+              }`}
+              src={images[`RED_BACK.svg`]}
+              alt={`Card ${index + 1}`}
+              style={{ transform: `translateX(${index * 8}px)`, zIndex: index }}
+            />
+          ))}
+        </div>
+        <SuitabilitiesSelected
+          cardImages={images}
+          assignedAbilities={assignedAbilities}
+        />
+      </div>
 		</div>
 	);
 };
 
 const SuitabilityModal = ({
 	modalIsOpen,
-	closeModal,
 	abilityToAssign,
 	suitCards,
 	selectedSuit,
@@ -437,7 +437,6 @@ const SuitabilityModal = ({
 	return (
 		<Modal
 			isOpen={modalIsOpen}
-			onRequestClose={closeModal}
 			style={customStyles}
 		>
 			<p className="modal-header">{`Select ${abilityToAssign} suit`}</p>
@@ -461,6 +460,11 @@ const SuitabilityModal = ({
 											? "not-allowed"
 											: "pointer"
 									}`,
+                  opacity: `${
+										Object.values(assignedAbilities).includes(card.charAt(0))
+											? "0.5"
+											: "1"
+									}`,
 								}}
 								className={`card ${
 									selectedSuit === card.charAt(0) ? "img-overlay" : ""
@@ -469,21 +473,16 @@ const SuitabilityModal = ({
 								alt={`card ${card}`}
 								onClick={() => selectSuit(card.charAt(0))}
 							/>
-							{/* {selectedSuit && <div className="img-overlay" />} */}
 						</div>
 					</>
 				))}
 			</div>
-			<button onClick={closeModal} className="modal-close-btn">
-				Close
-			</button>
 		</Modal>
 	);
 };
 
 const PrivilegeModal = ({
 	modalIsOpen,
-	closeModal,
 	selectSuit,
 	cardImages,
 }) => {
@@ -497,10 +496,9 @@ const PrivilegeModal = ({
 	return (
 		<Modal
 			isOpen={modalIsOpen}
-			onRequestClose={closeModal}
 			style={customStyles}
 		>
-			<p className="modal-header">{`Select Privilege or pass`}</p>
+			<p className="modal-header">{`Select Privilege or Pass`}</p>
 
 			<div className="modal-content">
 				{suitCards.map((card, index) => (
@@ -530,14 +528,10 @@ const PrivilegeModal = ({
 								}}
 							/>
 							<p>{privileges[privs[index]]}</p>
-							{/* {selectedSuit && <div className="img-overlay" />} */}
 						</div>
 					</>
 				))}
 			</div>
-			<button onClick={closeModal} className="modal-close-btn">
-				Close
-			</button>
 		</Modal>
 	);
 };
@@ -545,7 +539,7 @@ const PrivilegeModal = ({
 const SuitabilitiesSelected = ({ cardImages, assignedAbilities }) => {
 	const entries = Object.entries(assignedAbilities);
 	return (
-		<div style={{ display: "flex", marginTop: "20px" }}>
+		<div style={{ display: "flex", textTransform: "capitalize"}}>
 			{entries.length > 3 &&
 				entries.map((e) => {
 					const ability = e[0];
@@ -554,13 +548,7 @@ const SuitabilitiesSelected = ({ cardImages, assignedAbilities }) => {
 						<div>
 							<img
 								key={card}
-								style={{
-									cursor: `${
-										Object.values(assignedAbilities).includes(card.charAt(0))
-											? "not-allowed"
-											: "pointer"
-									}`,
-								}}
+								
 								className={`card`}
 								src={
 									cardImages[
