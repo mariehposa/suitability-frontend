@@ -1,4 +1,20 @@
 .App {
   width: 100%;
   display: flex;
+  background-color: #B2D2A4;;
+}
+
+.game-name {
+  font-size: 50px;
+  font-weight: 900;
+  line-height: 20px;
+  font-family: 'Electrolize', sans-serif;
+}
+
+.field {
+  width: 65.8%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
