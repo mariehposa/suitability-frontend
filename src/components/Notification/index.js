@@ -87,6 +87,7 @@ const Notification = (props) => {
 								<td
 									style={{
 										color: p[0] === board.activePlayer ? "red" : "black",
+										fontWeight: p[0] === dealer ? "500" : "normal",
 									}}
 								>
 									{`${p[0] === dealer ? "HOST" : ""} ${p[1]}`}

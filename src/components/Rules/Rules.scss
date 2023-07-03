@@ -1,18 +1,40 @@
 .rules-container {
-    padding: 40px;
+	padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
 
-    .heading {
-        font-size: 24px;
-        font-weight: 800;
-        text-align: center;
-    }
+	.heading {
+		font-size: 24px;
+		font-weight: 800;
+		text-align: center;
+	}
 
-    li, p {
-        font-size: 18px;
-        line-height: 30px;
-    }
+	li,
+	p {
+		font-size: 18px;
+		line-height: 28px;
+	}
 
-    .subheading {
-        font-weight: 600;
-    }
+	.subheading {
+		font-weight: 600;
+	}
+
+	.scroll-bar {
+		padding: 10px 20px;
+		color: #00a000;
+		background-color: #fff;
+		font-weight: 700;
+		font-size: 16px;
+		border: 1px solid #00a000;
+		border-radius: 10px;
+        cursor: pointer;
+        width: 200px;
+        align-self: center;
+        margin-top: 20px;
+
+		&:hover {
+			color: #fff;
+			background-color: #00a000;
+		}
+	}
 }

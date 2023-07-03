@@ -2,6 +2,10 @@ import React from "react";
 import "./Rules.scss";
 
 const Rules = () => {
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
 	return (
 		<div className="rules-container">
             <p className="heading">Game Rules</p>
@@ -140,6 +144,8 @@ const Rules = () => {
 				the player with the most points or tricks taken at the end of the game
 				wins!
 			</p>
+
+            <button className="scroll-bar" onClick={scrollToTop}>Back to the game</button>
 		</div>
 	);
 };
