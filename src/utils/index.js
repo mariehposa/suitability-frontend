@@ -14,6 +14,8 @@ export const socketConstants = {
 	roomCreated: 'roomCreated',
 	suitabilities: "suitabilities",
 	connectedPlayers: 'connectedPlayers',
+	enteredRoom: "enteredRoom",
+	notifyDealer: 'notifyDealer',
 
 	
 	connect: "connect",
@@ -21,6 +23,7 @@ export const socketConstants = {
 }
 
 export const gameState = {
+	lobby: "lobby",
 	ready: "ready",
 	chooseMode: "choose_mode",
 	inPlay: "in_play",

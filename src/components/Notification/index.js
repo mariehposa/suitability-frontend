@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { updatePlayerScores } from "../../redux/actionCreators/board";
 import { socket } from "../../socket";
@@ -22,8 +22,13 @@ const Notification = (props) => {
 		console.log(playersObj);
 		setPlayers(playersObj);
 
-		setDealer(host)
+		// setDealer(host)
 	});
+
+	socket.on(socketConstants.notifyDealer, (dealer) => {
+		console.log('got notified');
+		setDealer(dealer)
+	})
 
 	socket.on("usernameSet", function (players) {
 		console.log("set", players);
@@ -34,6 +39,10 @@ const Notification = (props) => {
 		console.log('notif logs',socketConstants.playerScores, scores);
 		updateScores(scores);
 	});
+
+	useEffect(() => {
+		
+	}, [])
 
 	const setUsername = (e) => {
 		e.preventDefault();
