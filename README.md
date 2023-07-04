@@ -1,71 +1,55 @@
-# Getting Started with Create React App
+# Suitability
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Suitability is a trick-taking card game that can be played by 2 to 5 players.
 
-## Available Scripts
+## Site Link 
+https://suitability.netlify.app
 
-In the project directory, you can run:
+* **Homepage**
+![image](https://github.com/bloominstituteoftechnology/Sorting/assets/33374159/e48aa5ef-6d05-411a-9083-5fb0e0eba8a2)
 
-### `npm start`
+## Table of Content
+1. [Getting started](#getting-started "Getting Started")
+* [Prerequisites](#prerequisites "Prerequisites")
+* [Installation](#installation "Installation")
+* [Enviroment variables](#enviroment-variables "Enviroment Variables")
+2. [Deployment](#deployment "Deployment")
+3. [Technology stack](#technology-stack "Technology Stack")
+4. [Acknowledgments](#acknowledgments "Acknowledgments")
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Getting Started
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### `npm test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To get started with this project you need a basic knowledge of the following.
+```
+HTML
+CSS
+Javascript (ES6)
+Version Control (Git)
+```
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* After cloning the repository, in the project directory, `cd` into `suitability-frontend` and you can run: `npm install` or `yarn install` in the console.
+* Then run `npm start` or `yarn start`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Deployment
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* The site was deployed with [Netlify](https://suitability.netlify.app)
 
-### `npm run eject`
+## Technology Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+* [React](https://react.dev) - The web framework used.
+* [Sass](https://sass-lang.com) - Cascading stylesheet preprocessor.
+* [React-Redux](https://redux.js.org) - State management tool.
+* [React-Router](https://reactrouter.com/en/main) - For client side routing.
+* [React-Modal](https://www.npmjs.com/package/react-modal) - Accessible modal dialog component.
+* [React-Toastify](https://www.npmjs.com/package/react-toastify) - For app notifications.
+* [Socket.io-client](https://socket.io/how-to/use-with-react) - A communication channel between the server and the client.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Acknowledgments
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# suitability-frontend
+* Middlesex University
