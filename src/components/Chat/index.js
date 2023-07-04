@@ -3,20 +3,33 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Send from "../../assets/send.png";
 import "./Chat.scss";
+import { socket } from "../../socket";
+import { socketConstants } from "../../utils";
 
 const Chat = () => {
 	const user = useSelector((state) => state.user);
 	const [newMessage, setNewMessage] = useState("");
-	const [messages, setMessages] = useState([
-		{ playerId: user.userId, message: "Hey there!", time: moment().calendar()},
-		{ playerId: "random user", message: "Hello!", time: moment().calendar() },
-	]);
+	const [messages, setMessages] = useState([]);
 
 	const divRef = useRef(null);
 
 	useEffect(() => {
 		divRef.current.scrollIntoView({ behavior: "smooth" });
 	}, [messages]);
+
+	useEffect(() => {
+		socket.on(socketConstants.newMessage, ({playerId, message}) => {
+
+			setMessages([
+				...messages,
+				{ playerId, message, time: moment().calendar() },
+			]);
+		})
+	})
+
+	const sendMessage = (message) => {
+		socket.emit(socketConstants.newMessage, message)
+	}
 
 	return (
 		<div className="chat">
@@ -32,7 +45,7 @@ const Chat = () => {
 							m.playerId?.length > 6
 								? `${m.playerId.substring(0, 6)}..`
 								: m.playerId
-						}: ${m.message}.`}</p>
+						}: ${m.message}`}</p>
 						<span className="time">{m.time}</span>
 					</div>
 				))}
@@ -42,10 +55,7 @@ const Chat = () => {
 			<div className="input-wrapper">
 				<form onSubmit={(e) => {
                     e.preventDefault()
-						setMessages([
-							...messages,
-							{ playerId: user.userId, message: newMessage },
-						]);
+					sendMessage(newMessage)
 						setNewMessage("");
 					}}>
                 <input
@@ -59,10 +69,7 @@ const Chat = () => {
 				></input>
 				<img
 					onClick={() => {
-						setMessages([
-							...messages,
-							{ playerId: user.userId, message: newMessage },
-						]);
+						sendMessage(newMessage)
 						setNewMessage("");
 					}}
 					src={Send}

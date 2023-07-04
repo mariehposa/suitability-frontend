@@ -18,6 +18,9 @@ export const socketConstants = {
 	notifyDealer: "notifyDealer",
 	roundFinished: 'roundFinished',
 	gameFinished: 'gameFinished',
+	newMessage:'newMessage',
+	leaveRoom: 'leaveRoom',
+
 
 	connect: "connect",
 	disconnect: "disconnect",

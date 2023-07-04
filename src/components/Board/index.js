@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
 	addItem,
 	deleteItem,
@@ -62,6 +62,8 @@ const Board = (props) => {
 	const closeModal = () => {
 		setIsOpen(false);
 	};
+
+  const navigate = useNavigate();
 
 	const suitNotify = () =>
 		toast("Suit assigned successfully!", {
@@ -371,7 +373,11 @@ const Board = (props) => {
 			)}
 
 			{gameStatus === gameState.ready && user.userId !== dealer && (
-				<button className="start-btn">Leave room</button>
+				<button onClick={() => {
+          socket.emit(socketConstants.leaveRoom)
+          navigate("/http://localhost:3000/room/5YRr0Z")
+          navigate(0)
+        }} className="start-btn">Leave room</button>
 			)}
 
 			{gameStatus === gameState.chooseMode && (
