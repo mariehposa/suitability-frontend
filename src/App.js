@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { PersistGate } from "redux-persist/lib/integration/react";
-import { persistor, store } from "./store";
+import { store } from "./store";
 import Board from "./components/Board";
 import Notification from "./components/Notification";
 import Rules from "./components/Rules";
@@ -32,13 +31,11 @@ function App() {
 
 	return (
 		<Provider store={store}>
-			{/* <PersistGate loading={<Board />} persistor={persistor}> */}
 			<BrowserRouter>
 				<Routes>
           <Route path="/" element={<AppStructure />} />
 				</Routes>
 			</BrowserRouter>
-			{/* </PersistGate> */}
 		</Provider>
 	);
 }
