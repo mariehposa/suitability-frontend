@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import { persistor, store } from "./store";
@@ -32,20 +33,30 @@ function App() {
 	return (
 		<Provider store={store}>
 			{/* <PersistGate loading={<Board />} persistor={persistor}> */}
-			<div className="App">
-				<div className="field">
-					<div className="logo-img-wrapper">
-						<img src={logo} alt="suitability-logo" />
-						<p className="game-name">Suitability</p>
-					</div>
-					<Board />
-					<Rules />
-				</div>
-				<Notification />
-			</div>
+			<BrowserRouter>
+				<Routes>
+          <Route path="/" element={<AppStructure />} />
+				</Routes>
+			</BrowserRouter>
 			{/* </PersistGate> */}
 		</Provider>
 	);
 }
 
 export default App;
+
+const AppStructure = () => {
+	return (
+		<div className="App">
+			<div className="field">
+				<div className="logo-img-wrapper">
+					<img src={logo} alt="suitability-logo" />
+					<p className="game-name">Suitability</p>
+				</div>
+				<Board />
+				<Rules />
+			</div>
+			<Notification />
+		</div>
+	);
+};
