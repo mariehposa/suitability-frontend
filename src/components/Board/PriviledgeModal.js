@@ -14,7 +14,6 @@ const PrivilegeModal = ({
 
 	const privs = Object.keys(privileges);
 
-	console.log(cardImages, "cardImages");
 
 	return (
 		<Modal isOpen={modalIsOpen} style={customStyles}>
@@ -44,7 +43,6 @@ const PrivilegeModal = ({
 								onClick={() => {
 									setSelectedSuit(privs[index]);
 									selectSuit(privileges[privs[index]]);
-									console.log(privs[index], "priv");
 								}}
 							/>
 							<p>{privileges[privs[index]]}</p>
