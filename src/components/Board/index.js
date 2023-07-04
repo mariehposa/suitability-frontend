@@ -370,28 +370,6 @@ const Board = (props) => {
 				<div className="start-btn">waiting for host to start game...</div>
 			)}
 
-			{gameStatus === gameState.chooseMode && (
-				<div className="mode-wrapper">
-					<p>Choose game mode</p>
-					<button
-						onClick={() => {
-							start(gameTypes.Deals);
-						}}
-						className="mode-btn"
-					>
-						Four deals
-					</button>
-					<button
-						onClick={() => {
-							start(gameTypes.Points);
-						}}
-						className="mode-btn"
-					>
-						250 points
-					</button>
-				</div>
-			)}
-
 			{gameStatus === gameState.ready && user.userId !== dealer && (
 				<button className="start-btn">Leave room</button>
 			)}
