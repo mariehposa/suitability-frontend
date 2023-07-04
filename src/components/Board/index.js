@@ -34,7 +34,6 @@ const customStyles = {
 const Board = (props) => {
 	const { board, updateTricks, tricks, activePlayer } = props;
 
-	console.log("props", props);
 
 	const [cards, setCards] = useState([]);
 	const [gameStatus, setGameStatus] = useState(gameState.lobby);
@@ -71,7 +70,6 @@ const Board = (props) => {
 		});
 
 	const selectSuit = (suit) => {
-		console.log("suit", suit);
 		if (!Object.values(assignedAbilities).includes(suit)) {
 			setSelectedSuit(suit);
 
@@ -96,26 +94,21 @@ const Board = (props) => {
 			setDealer(dealer);
 		});
 		socket.on("player cards", function (cards) {
-			// console.log(cards, "player cards");
 			setCards(JSON.parse(cards)[socket.id]);
 		});
 
 		socket.on(socketConstants.board, (board) => {
-			// console.log("current board", board);
 			dispatch(updateBoard(board));
 		});
 
 		socket.on(socketConstants.activePlayer, (playerId) => {
-			console.log("active player", playerId);
 			dispatch(changePlayer(playerId));
 		});
 
 		socket.on(socketConstants.playerScores, (scores) => {
-			// console.log("board logs", socketConstants.playerScores, scores);
 		});
 
 		socket.on(socketConstants.playerTricks, (tricks) => {
-			// console.log(socketConstants.playerTricks, tricks);
 			updateTricks(tricks);
 		});
 
@@ -154,7 +147,6 @@ const Board = (props) => {
     })
 
 		socket.on(socketConstants.error, (error) => {
-			console.log("An error occured => ", error?.msg);
 			toast.error(`${error.msg}`, {
 				position: "top-center",
 				autoClose: 1000,
@@ -196,7 +188,6 @@ const Board = (props) => {
 		);
 
 		socket.on(socketConstants.suitabilities, (abilities) => {
-			console.log(abilities, "assigned abilities");
 			setAssignedAbilities(abilities);
 		});
 		/**
@@ -227,22 +218,17 @@ const Board = (props) => {
 
 		return () => {
 			socket.off("player cards", function (cards) {
-				// console.log(cards, "player cards");
 				setCards(JSON.parse(cards)[socket.id]);
 			});
 
 			socket.off(socketConstants.board, (board) => {
-				// console.log("current board", board);
 				dispatch(updateBoard(board));
 			});
 
 			socket.off(socketConstants.activePlayer, (playerId) => {
-				// console.log("active player", playerId);
-				// dispatch(changePlayer(playerId));
 			});
 
 			socket.off(socketConstants.error, (e) => {
-				// console.log("An error occured", e.msg);
 			});
 		};
 	}, [dispatch, updateTricks]);
@@ -267,7 +253,6 @@ const Board = (props) => {
 
 	const start = (gameType) => {
 		socket.emit("start", gameType);
-		console.log("emitting start");
 		// setGameStatus(gameState.selectSuitabilities);
 		dispatch(startGame());
 	};
@@ -288,7 +273,6 @@ const Board = (props) => {
 
 	const lastCard = board?.slice(-1)[0];
 
-	console.log("last card", props.board);
 
 	const playCard = (card) => {
 		socket.emit(socketConstants.playCard, card);

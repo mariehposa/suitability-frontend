@@ -15,30 +15,24 @@ const Notification = (props) => {
 
 	const user = useSelector((state) => state.user);
 	const board = useSelector((state) => state.board);
-	console.log("notif props", props, user);
 
 	socket.on(
 		socketConstants.connectedPlayers,
 		function (connectedPlayers, host) {
 			var playersObj = JSON.parse(connectedPlayers);
-			console.log(playersObj);
 			setPlayers(playersObj);
-			// setDealer(host)
 		}
 	);
 
 	socket.on(socketConstants.notifyDealer, (dealer) => {
-		console.log("got notified");
 		setDealer(dealer);
 	});
 
 	socket.on("usernameSet", function (players) {
-		console.log("set", players);
 		setPlayers(JSON.parse(players));
 	});
 
 	socket.on(socketConstants.playerScores, (scores) => {
-		console.log("notif logs", socketConstants.playerScores, scores);
 		updateScores(scores);
 	});
 
@@ -46,7 +40,6 @@ const Notification = (props) => {
 
 	const setUsername = (e) => {
 		e.preventDefault();
-		console.log(e);
 		if (userInput) {
 			socket.emit("setUsername", userInput);
 			setUserInput("");
@@ -81,7 +74,6 @@ const Notification = (props) => {
 						<th>Game Score</th>
 					</tr>
 					{Object.entries(players).map((p) => {
-						console.log("checking", p, board);
 						return (
 							<tr>
 								<td

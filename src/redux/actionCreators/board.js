@@ -20,7 +20,6 @@ export const updateBoard = (board) => {
 };
 
 export const updatePlayerTricks = (tricksObj) => (dispatch, getState) => {
-	console.log("from redux", tricksObj[getState().user.userId] ?? 0);
 	dispatch({
 		type: types.PLAYER_TRICKS,
 		payload: tricksObj, //[getState().user.userId] ?? 0
@@ -28,7 +27,6 @@ export const updatePlayerTricks = (tricksObj) => (dispatch, getState) => {
 };
 
 export const updatePlayerScores = (scoresObj) => (dispatch, getState) => {
-	// console.log('from redux', scoresObj[getState().user.userId] ?? 0);
 	dispatch({
 		type: types.PLAYER_SCORES,
 		payload: scoresObj,
