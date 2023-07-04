@@ -12,48 +12,49 @@ import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	const user = useSelector((state) => state.user);
-	useEffect(() => {
-		// no-op if the socket is already connected
-		socket.connect();
+  const user = useSelector((state) => state.user);
+  useEffect(() => {
+    // no-op if the socket is already connected
+    socket.connect();
 
-		socket.on(socketConstants.connect, () => {
-			dispatch(setUserId(socket.id));
-		});
+    socket.on(socketConstants.connect, () => {
+      dispatch(setUserId(socket.id));
+    });
 
-		return () => {
-			socket.off(socketConstants.connect);
-			socket.disconnect();
-		};
-	}, []);
+    return () => {
+      socket.off(socketConstants.connect);
+      socket.disconnect();
+    };
+  }, []);
 
-	return (
-		<Provider store={store}>
-			<BrowserRouter>
-				<Routes>
-          <Route path="/" element={<AppStructure />} />
-				</Routes>
-			</BrowserRouter>
-		</Provider>
-	);
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/:roomId" element={<AppStructure />} />
+          <Route path="/*" element={<AppStructure />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  );
 }
 
 export default App;
 
 const AppStructure = () => {
-	return (
-		<div className="App">
-			<div className="field">
-				<div className="logo-img-wrapper">
-					<img src={logo} alt="suitability-logo" />
-					<p className="game-name">Suitability</p>
-				</div>
-				<Board />
-				<Rules />
-			</div>
-			<Notification />
-		</div>
-	);
+  return (
+    <div className="App">
+      <div className="field">
+        <div className="logo-img-wrapper">
+          <img src={logo} alt="suitability-logo" />
+          <p className="game-name">Suitability</p>
+        </div>
+        <Board />
+        <Rules />
+      </div>
+      <Notification />
+    </div>
+  );
 };
