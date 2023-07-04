@@ -78,7 +78,7 @@ const Notification = (props) => {
 										fontWeight: p[0] === dealer ? "500" : "normal",
 									}}
 								>
-									{`${p[0] === dealer ? "HOST" : ""} ${p[1]}`}
+									{`${p[0] === dealer ? "Dealer" : ""} ${p[1]}`}
 								</td>
 								<td>{tricks[p[0]] ?? 0}</td>
 								<td>{scores[p[0]] ?? 0}</td>
