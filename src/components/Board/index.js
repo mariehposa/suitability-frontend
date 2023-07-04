@@ -161,12 +161,12 @@ const Board = (props) => {
 			setAssignedAbilities(abilities);
 		});
 		/**
-     * state.board = [];
-    state.currentSuit = "";
-    state.highestPlayedCard = 0;
-    setCurrentPlayer(state.highestPlayer);
-    state.highestPlayer = null;
-     */
+	 * state.board = [];
+	state.currentSuit = "";
+	state.highestPlayedCard = 0;
+	setCurrentPlayer(state.highestPlayer);
+	state.highestPlayer = null;
+	 */
 
 		socket.on(socketConstants.suitabilityChosen, (ability) => {
 			closeModal();
@@ -339,6 +339,14 @@ const Board = (props) => {
 
 			{gameStatus === gameState.ready && user.userId !== dealer && (
 				<div className="start-btn">waiting for host to start game...</div>
+			)}
+
+			{gameStatus === gameState.ready && user.userId !== dealer && (
+				<button
+					className="start-btn"
+				>
+					Leave room
+				</button>
 			)}
 
 			{gameStatus === gameState.chooseMode && (

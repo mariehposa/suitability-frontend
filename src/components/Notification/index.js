@@ -4,6 +4,7 @@ import { updatePlayerScores } from "../../redux/actionCreators/board";
 import { socket } from "../../socket";
 import { useSelector } from "react-redux";
 import { socketConstants } from "../../utils";
+import Chat from "../Chat";
 import "./Notification.scss";
 
 const Notification = (props) => {
@@ -55,6 +56,7 @@ const Notification = (props) => {
 
 	return (
 		<div className="notification-wrapper">
+			<p className="heading">Profile</p>
 			<form id="form" onSubmit={setUsername} className="form">
 				<label>Create a username</label>
 				<input
@@ -66,14 +68,8 @@ const Notification = (props) => {
 				<button>Send</button>
 			</form>
 
-			<div>
-				<p>Username: {players[user.userId]}</p>
-				<p>Tricks Taken: {tricks[user.userId] ?? 0}</p>
-				<p>Game Score: {scores[user.userId] ?? 0}</p>
-			</div>
-
 			<div className="score-board">
-				<p>{`Number of players connected: ${Object.keys(players).length}`}</p>
+				<p className="subheading">{`Number of players connected: ${Object.keys(players).length}`}</p>
 				<table>
 					<tr>
 						<th>Player Name</th>
@@ -99,6 +95,8 @@ const Notification = (props) => {
 					})}
 				</table>
 			</div>
+
+			<Chat />
 		</div>
 	);
 };
