@@ -67,6 +67,7 @@ const Board = (props) => {
 			draggable: true,
 			progress: undefined,
 			theme: "light",
+			containerId: 'A',
 		});
 
 	const selectSuit = (suit) => {
@@ -118,8 +119,42 @@ const Board = (props) => {
 			updateTricks(tricks);
 		});
 
+    socket.on(socketConstants.roundFinished, (winner) => {
+      setTimeout(() => {
+        toast.info(`${winner} takes this round! Starting next round`, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          toastId: `${winner}-round-notif`,
+          theme: "light",
+          containerId: 'A',
+        });
+      }, 1000)
+    })
+
+    socket.on(socketConstants.gameFinished, (winner, score) => {
+      setTimeout(() => {
+        toast.info(`${winner} wins the game with ${score} points`, {
+          position: "top-center",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          toastId: `${winner}-game-notif`,
+          progress: undefined,
+          theme: "light",
+          containerId: 'A',
+        });
+      }, 1000)
+    })
+
 		socket.on(socketConstants.error, (error) => {
-			console.log("An error occured => ", error.msg);
+			console.log("An error occured => ", error?.msg);
 			toast.error(`${error.msg}`, {
 				position: "top-center",
 				autoClose: 1000,
@@ -127,8 +162,10 @@ const Board = (props) => {
 				closeOnClick: true,
 				pauseOnHover: false,
 				draggable: false,
+        toastId: `${error?.msg}-chosen`,
 				progress: undefined,
 				theme: "light",
+				containerId: 'A',
 			});
 		});
 
@@ -137,11 +174,13 @@ const Board = (props) => {
 				position: "top-center",
 				autoClose: false,
 				hideProgressBar: false,
+        toastId: roomId,
 				closeOnClick: false,
 				pauseOnHover: false,
 				draggable: false,
 				progress: undefined,
 				theme: "light",
+				containerId: 'A',
 			});
 		});
 
@@ -179,8 +218,10 @@ const Board = (props) => {
 				closeOnClick: true,
 				pauseOnHover: false,
 				draggable: false,
+        toastId: `${ability}-chosen`,
 				progress: undefined,
 				theme: "light",
+				containerId: 'A',
 			});
 		});
 
@@ -217,6 +258,7 @@ const Board = (props) => {
 				draggable: false,
 				progress: undefined,
 				theme: "light",
+				containerId: 'A',
 			});
 		} else {
 			toast.dismiss();
@@ -396,7 +438,8 @@ const Board = (props) => {
 				customStyles={customStyles}
 			/>
 
-			<ToastContainer />
+			<ToastContainer containerId={'A'}/>
+			<ToastContainer containerId={'B'}/>
 
 			<div className="trick-suit">
 				<div className="board">
