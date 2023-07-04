@@ -5,10 +5,11 @@ import { store } from "./store";
 import Board from "./components/Board";
 import Notification from "./components/Notification";
 import Rules from "./components/Rules";
+import Header from "./components/Header";
+import ErrorPage from "./components/ErrorPage";
 import { socket } from "./socket";
 import { socketConstants } from "./utils/index.js";
 import { setUserId } from "./redux/actionCreators/user";
-import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
@@ -33,7 +34,9 @@ function App() {
 		<Provider store={store}>
 			<BrowserRouter>
 				<Routes>
+          <Route path="/room/:roomId" element={<AppStructure />} />
           <Route path="/" element={<AppStructure />} />
+          <Route path='/*' element={<ErrorPage />}/>
 				</Routes>
 			</BrowserRouter>
 		</Provider>
@@ -46,10 +49,7 @@ const AppStructure = () => {
 	return (
 		<div className="App">
 			<div className="field">
-				<div className="logo-img-wrapper">
-					<img src={logo} alt="suitability-logo" />
-					<p className="game-name">Suitability</p>
-				</div>
+				<Header />
 				<Board />
 				<Rules />
 			</div>
