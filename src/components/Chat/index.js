@@ -8,8 +8,8 @@ const Chat = () => {
 	const user = useSelector((state) => state.user);
 	const [newMessage, setNewMessage] = useState("");
 	const [messages, setMessages] = useState([
-		{ playerId: user.userId, message: "Hey there! Wanna come?!", time: moment().calendar()},
-		{ playerId: "random user", message: "Sweet! go girl!", time: moment().calendar() },
+		{ playerId: user.userId, message: "Hey there!", time: moment().calendar()},
+		{ playerId: "random user", message: "Hello!", time: moment().calendar() },
 	]);
 
 	const divRef = useRef(null);

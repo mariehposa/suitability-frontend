@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
 	addItem,
 	deleteItem,
@@ -33,8 +34,13 @@ const customStyles = {
 
 const Board = (props) => {
 	const { board, updateTricks, tricks, activePlayer } = props;
+	const { roomId: roomID } = useParams();
 
-	console.log("props", props);
+	useEffect(() => {
+		if (roomID) {
+			socket.emit(socketConstants.joinRoom, roomID);
+		}
+	}, [roomID]);
 
 	const [cards, setCards] = useState([]);
 	const [gameStatus, setGameStatus] = useState(gameState.lobby);
@@ -67,10 +73,10 @@ const Board = (props) => {
 			draggable: true,
 			progress: undefined,
 			theme: "light",
+			containerId: "A",
 		});
 
 	const selectSuit = (suit) => {
-		console.log("suit", suit);
 		if (!Object.values(assignedAbilities).includes(suit)) {
 			setSelectedSuit(suit);
 
@@ -95,31 +101,58 @@ const Board = (props) => {
 			setDealer(dealer);
 		});
 		socket.on("player cards", function (cards) {
-			// console.log(cards, "player cards");
 			setCards(JSON.parse(cards)[socket.id]);
 		});
 
 		socket.on(socketConstants.board, (board) => {
-			// console.log("current board", board);
 			dispatch(updateBoard(board));
 		});
 
 		socket.on(socketConstants.activePlayer, (playerId) => {
-			console.log("active player", playerId);
 			dispatch(changePlayer(playerId));
 		});
 
-		socket.on(socketConstants.playerScores, (scores) => {
-			// console.log("board logs", socketConstants.playerScores, scores);
-		});
+		socket.on(socketConstants.playerScores, (scores) => {});
 
 		socket.on(socketConstants.playerTricks, (tricks) => {
-			// console.log(socketConstants.playerTricks, tricks);
 			updateTricks(tricks);
 		});
 
+		socket.on(socketConstants.roundFinished, (winner) => {
+			setTimeout(() => {
+				toast.info(`${winner} takes this round! Starting next round`, {
+					position: "top-center",
+					autoClose: 3000,
+					hideProgressBar: false,
+					closeOnClick: false,
+					pauseOnHover: false,
+					draggable: false,
+					progress: undefined,
+					toastId: `${winner}-round-notif`,
+					theme: "light",
+					containerId: "A",
+				});
+			}, 1000);
+		});
+
+		socket.on(socketConstants.gameFinished, (winner, score) => {
+			setTimeout(() => {
+				toast.info(`${winner} wins the game with ${score} points`, {
+					position: "top-center",
+					autoClose: false,
+					hideProgressBar: false,
+					closeOnClick: false,
+					pauseOnHover: false,
+					draggable: false,
+					toastId: `${winner}-game-notif`,
+					progress: undefined,
+					theme: "light",
+					containerId: "A",
+				});
+			}, 1000);
+		});
+
 		socket.on(socketConstants.error, (error) => {
-			console.log("An error occured => ", error.msg);
 			toast.error(`${error.msg}`, {
 				position: "top-center",
 				autoClose: 1000,
@@ -127,8 +160,10 @@ const Board = (props) => {
 				closeOnClick: true,
 				pauseOnHover: false,
 				draggable: false,
+				toastId: `${error?.msg}-chosen`,
 				progress: undefined,
 				theme: "light",
+				containerId: "A",
 			});
 		});
 
@@ -137,11 +172,13 @@ const Board = (props) => {
 				position: "top-center",
 				autoClose: false,
 				hideProgressBar: false,
+				toastId: roomId,
 				closeOnClick: false,
 				pauseOnHover: false,
 				draggable: false,
 				progress: undefined,
 				theme: "light",
+				containerId: "A",
 			});
 		});
 
@@ -157,16 +194,15 @@ const Board = (props) => {
 		);
 
 		socket.on(socketConstants.suitabilities, (abilities) => {
-			console.log(abilities, "assigned abilities");
 			setAssignedAbilities(abilities);
 		});
 		/**
-	 * state.board = [];
-	state.currentSuit = "";
-	state.highestPlayedCard = 0;
-	setCurrentPlayer(state.highestPlayer);
-	state.highestPlayer = null;
-	 */
+     * state.board = [];
+    state.currentSuit = "";
+    state.highestPlayedCard = 0;
+    setCurrentPlayer(state.highestPlayer);
+    state.highestPlayer = null;
+     */
 
 		socket.on(socketConstants.suitabilityChosen, (ability) => {
 			closeModal();
@@ -179,30 +215,25 @@ const Board = (props) => {
 				closeOnClick: true,
 				pauseOnHover: false,
 				draggable: false,
+				toastId: `${ability}-chosen`,
 				progress: undefined,
 				theme: "light",
+				containerId: "A",
 			});
 		});
 
 		return () => {
 			socket.off("player cards", function (cards) {
-				// console.log(cards, "player cards");
 				setCards(JSON.parse(cards)[socket.id]);
 			});
 
 			socket.off(socketConstants.board, (board) => {
-				// console.log("current board", board);
 				dispatch(updateBoard(board));
 			});
 
-			socket.off(socketConstants.activePlayer, (playerId) => {
-				// console.log("active player", playerId);
-				// dispatch(changePlayer(playerId));
-			});
+			socket.off(socketConstants.activePlayer, (playerId) => {});
 
-			socket.off(socketConstants.error, (e) => {
-				// console.log("An error occured", e.msg);
-			});
+			socket.off(socketConstants.error, (e) => {});
 		};
 	}, [dispatch, updateTricks]);
 
@@ -217,6 +248,7 @@ const Board = (props) => {
 				draggable: false,
 				progress: undefined,
 				theme: "light",
+				containerId: "A",
 			});
 		} else {
 			toast.dismiss();
@@ -225,7 +257,6 @@ const Board = (props) => {
 
 	const start = (gameType) => {
 		socket.emit("start", gameType);
-		console.log("emitting start");
 		// setGameStatus(gameState.selectSuitabilities);
 		dispatch(startGame());
 	};
@@ -245,8 +276,6 @@ const Board = (props) => {
 	const suitCards = ["C13", "H13", "D13", "S13"];
 
 	const lastCard = board?.slice(-1)[0];
-
-	console.log("last card", props.board);
 
 	const playCard = (card) => {
 		socket.emit(socketConstants.playCard, card);
@@ -341,12 +370,30 @@ const Board = (props) => {
 				<div className="start-btn">waiting for host to start game...</div>
 			)}
 
+			{gameStatus === gameState.chooseMode && (
+				<div className="mode-wrapper">
+					<p>Choose game mode</p>
+					<button
+						onClick={() => {
+							start(gameTypes.Deals);
+						}}
+						className="mode-btn"
+					>
+						Four deals
+					</button>
+					<button
+						onClick={() => {
+							start(gameTypes.Points);
+						}}
+						className="mode-btn"
+					>
+						250 points
+					</button>
+				</div>
+			)}
+
 			{gameStatus === gameState.ready && user.userId !== dealer && (
-				<button
-					className="start-btn"
-				>
-					Leave room
-				</button>
+				<button className="start-btn">Leave room</button>
 			)}
 
 			{gameStatus === gameState.chooseMode && (
@@ -370,7 +417,6 @@ const Board = (props) => {
 					</button>
 				</div>
 			)}
-
 			{gameStatus === "select_suitabilities" && (
 				<button
 					onClick={() => {
@@ -404,7 +450,8 @@ const Board = (props) => {
 				customStyles={customStyles}
 			/>
 
-			<ToastContainer />
+			<ToastContainer containerId={"A"} />
+			<ToastContainer containerId={"B"} />
 
 			<div className="trick-suit">
 				<div className="board">

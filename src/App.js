@@ -13,22 +13,22 @@ import { setUserId } from "./redux/actionCreators/user";
 import "./App.css";
 
 function App() {
-	const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-	const user = useSelector((state) => state.user);
-	useEffect(() => {
-		// no-op if the socket is already connected
-		socket.connect();
+  const user = useSelector((state) => state.user);
+  useEffect(() => {
+    // no-op if the socket is already connected
+    socket.connect();
 
-		socket.on(socketConstants.connect, () => {
-			dispatch(setUserId(socket.id));
-		});
+    socket.on(socketConstants.connect, () => {
+      dispatch(setUserId(socket.id));
+    });
 
-		return () => {
-			socket.off(socketConstants.connect);
-			socket.disconnect();
-		};
-	}, []);
+    return () => {
+      socket.off(socketConstants.connect);
+      socket.disconnect();
+    };
+  }, []);
 
 	return (
 		<Provider store={store}>
