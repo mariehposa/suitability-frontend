@@ -19,7 +19,7 @@ https://suitability.netlify.app
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+To install this application, you'll need Node.js 14+ (which comes with npm) installed on your computer. The following instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
@@ -33,8 +33,8 @@ Version Control (Git)
 
 ### Installation
 
-* After cloning the repository, in the project directory, `cd` into `suitability-frontend` and you can run: `npm install` or `yarn install` in the console.
-* Then run `npm start` or `yarn start`.
+* After cloning the repository, in the project directory, `cd` into `suitability-frontend` and you can run: `npm install` in the console.
+* Then run `npm start`.
 
 ## Deployment
 
@@ -48,6 +48,7 @@ Version Control (Git)
 * [React-Router](https://reactrouter.com/en/main) - For client side routing.
 * [React-Modal](https://www.npmjs.com/package/react-modal) - Accessible modal dialog component.
 * [React-Toastify](https://www.npmjs.com/package/react-toastify) - For app notifications.
+* [Moment](https://momentjs.com) - For displaying date and time in a human-readable format.
 * [Socket.io-client](https://socket.io/how-to/use-with-react) - A communication channel between the server and the client.
 
 ## Acknowledgments
