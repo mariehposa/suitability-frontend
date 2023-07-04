@@ -2,6 +2,10 @@
   width: 100%;
   display: flex;
   background-color: #B2D2A4;;
+  
+  ::selection {
+    background: #f1c0b9;
+  }
 }
 
 .field {
