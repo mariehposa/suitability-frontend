@@ -375,7 +375,7 @@ const Board = (props) => {
 			{gameStatus === gameState.ready && user.userId !== dealer && (
 				<button onClick={() => {
           socket.emit(socketConstants.leaveRoom)
-          navigate("/http://localhost:3000/room/5YRr0Z")
+          navigate("/")
           navigate(0)
         }} className="start-btn">Leave room</button>
 			)}
