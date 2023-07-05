@@ -6,7 +6,7 @@ Suitability is a trick-taking card game that can be played by 2 to 5 players.
 https://suitability.netlify.app
 
 * **Homepage**
-<img width="1439" alt="image" src="https://github.com/bloominstituteoftechnology/Sorting/assets/33374159/42c1b191-807e-4d0d-92ae-f5ab4800f37e">
+<img width="1439" alt="image" src="https://github.com/bloominstituteoftechnology/Sorting/assets/33374159/2465b3b6-349f-46ed-9d31-d2d6e28aa848">
 
 ## Table of Content
 1. [Getting started](#getting-started "Getting Started")
